@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Panels</title>
+
+<!-- Optional: site body font (Inter). Safe to remove if you prefer pure system fonts. -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+/* If you have the Carena font file, put it at:  Assets/fonts/Carena.woff2  */
+@font-face{
+  font-family: "BBH Sans Hegarty";
+  src: url("Assets/fonts/BBH-Sans-Hegarty.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root{
+  --accent:#F07E1C; --accent2:#ff9b49;
+  --fg:#f5f6f7; --muted:#c7c2bb;
+  --bgA:#141316; --bgB:#0f0e10; --panel:#1b1a1d;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--fg);
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
+  background:
+    radial-gradient(1000px 600px at 15% -10%, rgba(240,126,28,0.25), transparent 60%),
+    radial-gradient(800px 600px at 85% 10%, rgba(255,155,73,0.18), transparent 60%),
+    linear-gradient(180deg, var(--bgA) 0%, var(--bgB) 100%);
+}
+
+/* Header */
+header{padding:80px 18px 16px; border-bottom:1px solid rgba(255,255,255,.06)}
+.titlewrap{max-width:1800px;margin:0 auto;text-align:center}
+h1{
+  margin:0;
+  font-family: "BBH Sans Hegarty", sans-serif;
+  font-weight:900;
+  color:var(--accent);
+  /* BIG & responsive */
+  font-size:clamp(150px, 10vw, 128px);
+  line-height:0.9;
+  letter-spacing:.5px;
+  text-shadow: 0 10px 24px rgba(240,126,28,.18);
+}
+.sub{
+  margin-top:5px;
+  font-size:clamp(10px, 1.5vw, 14px);
+  color:var(--muted);
+}
+.actions{
+  margin-top:20px;
+  display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap
+}
+.btn{
+  background: conic-gradient(from 180deg at 50% 50%, var(--accent), var(--accent2), var(--accent));
+  color:#121112; border:none; border-radius:999px; padding:12px 18px; font-weight:800; cursor:pointer;
+  box-shadow: 0 10px 24px rgba(240,126,28,.25), 0 2px 6px rgba(0,0,0,.25);
+  transition: transform .08s ease;
+}
+.btn:hover{transform: translateY(-1px)}
+.btn:active{transform: translateY(1px)}
+.btn.secondary{
+  background:#1d1b1f; color:var(--fg); border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 8px 18px rgba(0,0,0,.35);
+}
+
+/* Main layout */
+main{max-width:1400px; margin:0 auto; padding:26px 18px 90px}
+
+/* centered seed + title */
+.strip-meta{
+  display:flex; gap:12px; align-items:center; justify-content:center;
+  color:var(--muted); margin:12px auto 24px; flex-wrap:wrap; text-align:center
+}
+.pill{border:1px solid rgba(255,255,255,.12); padding:8px 12px; border-radius:999px}
+
+/* Panel grid — bigger panels */
+.grid{
+  display:flex; gap:22px; justify-content:center; align-items:stretch; flex-wrap:nowrap;
+}
+.panel{
+  position:relative; background:var(--panel);
+  border:1px solid rgba(255,255,255,.08); border-radius:18px; overflow:hidden;
+  /* larger presence on desktop */
+  flex:1 1 33%; min-width:0; aspect-ratio: 2 / 3;
+  display:flex; align-items:center; justify-content:center;
+}
+.panel img{
+  width:100%; height:100%;
+  object-fit:contain;    /* no cropping */
+  display:block; background:#0b0b0d;
+}
+@media (max-width: 1100px){
+  main{max-width:1200px}
+}
+@media (max-width: 860px){
+  .grid{flex-direction:column}
+  .panel{aspect-ratio:auto}
+}
+
+/* Speech bubbles — fade in on hover/tap */
+.bubble{
+  position:absolute;
+  max-width:60%;
+  background:rgba(255,255,255,.72);
+  color:#111;
+  padding:8px 10px;
+  border-radius:14px;
+  line-height:1.2;
+  font-weight:800;
+  font-size:clamp(12px, 1.6vw, 14px);
+  border:1.5px solid rgba(17,17,17,.65);
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.28));
+  backdrop-filter:blur(2px) saturate(110%);
+  opacity:0;
+  transition:opacity .28s ease;
+}
+.bubble::after{
+  content:"";
+  position:absolute; width:12px; height:12px;
+  background:rgba(255,255,255,.72); border:1.5px solid rgba(17,17,17,.65);
+  transform:rotate(45deg);
+}
+.bubble.speak.top::after{bottom:-7px; left:18px}
+.bubble.speak.bottom::after{top:-7px; right:22px}
+
+/* show on hover/tap */
+.panel:hover .bubble,
+.panel:active .bubble { opacity:1; }
+
+/* Footer */
+footer{
+  max-width:1400px; margin:40px auto 90px; color:var(--muted); padding:0 18px; text-align:center
+}
+footer .share{margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.share a{color:var(--fg);text-decoration:none;border:1px solid rgba(255,255,255,.15);padding:8px 14px;border-radius:10px;font-size:14px;transition:background .2s}
+.share a:hover{background:rgba(255,255,255,.08)}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="titlewrap">
+    <h1>PANELS</h1>
+    <div class="sub">Generative comics for ordinary chaos.</div>
+    <div class="actions">
+      <button id="reroll" class="btn">✨ New strip</button>
+      <button id="copyLink" class="btn secondary">🔗 Copy seed link</button>
+      <!-- social buttons removed here per request -->
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="strip-meta">
+    <span class="pill">Seed: <span id="seedOut"></span></span>
+    <span class="pill">Title: <span id="titleOut"></span></span>
+  </div>
+  <section id="grid" class="grid"></section>
+</main>
+
+<footer>
+  <p><strong>About:</strong> Prototype comic strip. Panels generated with Sora; dialogue fixed. Share specific strips with
+    <code>?seed=###&amp;set=name</code>.</p>
+  <div class="share">
+    <a id="shareX2" target="_blank">🐦 Twitter</a>
+    <a id="shareFB2" target="_blank">📘 Facebook</a>
+    <a id="shareIG2" target="_blank">📸 Instagram</a>
+  </div>
+</footer>
+
+<script>
+/* Seeded RNG (Mulberry32) */
+function mulberry32(a){return function(){let t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+const url=new URL(location.href);
+const urlSeed=url.searchParams.get('seed');
+const urlSet=url.searchParams.get('set');
+const seed=urlSeed?Number(urlSeed):Math.floor(Math.random()*1e9);
+const rng=mulberry32(seed);
+const choice=(arr)=>arr[Math.floor(rng()*arr.length)];
+
+/* Sets & Assets */
+const SETS=[
+{id:"tram",title:"The Tram Betrayal"},
+{id:"kitchen",title:"Kitchen Chaos"},
+{id:"coffee",title:"Coffee Drama"},
+{id:"catlogic",title:"Cat Logic"},
+{id:"study",title:"Study Session Gone Wrong"},
+{id:"laundry",title:"Laundry Roulette"},
+{id:"grocery",title:"The Great Grocery Heist"},
+{id:"zoom",title:"Zoom Catastrophe"},
+{id:"midnight",title:"Midnight Snack Crisis"},
+{id:"nap",title:"The Nap Paradox"},
+{id:"snooze",title:"The Alarm Betrayal"},
+{id:"plant",title:"Plant Parenting"},
+{id:"lost",title:"Lost and Found (Sort Of)"},
+{id:"chat",title:"Group Chat Meltdown"},
+{id:"sunday",title:"Sunday Existentialism"}
+];
+
+const ASSETS={
+"tram":["Assets/panels/hastymorningrush_1.jpg","Assets/panels/hastymorningrush_2.jpg","Assets/panels/hastymorningrush_3.jpg"],
+"kitchen":["Assets/panels/kitchenchaos_1.png","Assets/panels/kitchenchaos_2.png","Assets/panels/kitchenchaos_3.png"],
+"coffee":["Assets/panels/coffeedrama_1.png","Assets/panels/coffeedrama_2.png","Assets/panels/coffeedrama_3.png"],
+"catlogic":["Assets/panels/catlogic_1.webp","Assets/panels/catlogic_2.webp","Assets/panels/catlogic_3.webp"],
+"study":["Assets/panels/study_1.webp","Assets/panels/study_2.webp","Assets/panels/study_3.webp"],
+"laundry":["Assets/panels/laundry_1.webp","Assets/panels/laundry_2.webp","Assets/panels/laundry_3.webp"],
+"grocery":["Assets/panels/grocery_1.webp","Assets/panels/grocery_2.webp","Assets/panels/grocery_3.webp"],
+"zoom":["Assets/panels/zoom_1.webp","Assets/panels/zoom_2.webp","Assets/panels/zoom_3.webp"],
+"midnight":["Assets/panels/midnight_1.webp","Assets/panels/midnight_2.webp","Assets/panels/midnight_3.webp"],
+"nap":["Assets/panels/nap_1.webp","Assets/panels/nap_2.webp","Assets/panels/nap_3.webp"],
+"snooze":["Assets/panels/snooze_1.webp","Assets/panels/snooze_2.webp","Assets/panels/snooze_3.webp"],
+"plant":["Assets/panels/plant_1.webp","Assets/panels/plant_2.webp","Assets/panels/plant_3.webp"],
+"lost":["Assets/panels/lost_1.webp","Assets/panels/lost_2.webp","Assets/panels/lost_3.webp"],
+"chat":["Assets/panels/chat_1.webp","Assets/panels/chat_2.webp","Assets/panels/chat_3.webp"],
+"sunday":["Assets/panels/sunday_1.webp","Assets/panels/sunday_2.webp","Assets/panels/sunday_3.webp"]
+};
+
+const DIALOGUE={
+"tram":["Time only sprints when I’m late.","Of course the tram ghosted me again.","Fine. The cat commutes now."],
+"kitchen":["Balanced breakfast, right?","Guess who pays rent in chaos now.","At least the floor’s hydrated."],
+"coffee":["All I need is caffeine and mercy.","That’s… not even close.","Character development via latte art."],
+"catlogic":["If I leave now, I’ll only be… mildly doomed.","Guess the cat pays rent in roadblocks.","Honestly, the cat’s got better time management."],
+"study":["Today I’m finally productive.","She just submitted my essay in emojis.","Honestly, better than half the assignments I see."],
+"laundry":["Laundry is just pattern recognition on hard mode.","Ah yes, the limited-edition ‘Cat Hair’ collection.","At least someone folded themselves."],
+"grocery":["Meal prep era begins now.","We do not steal carbs in this house!","They form alliances when food’s involved."],
+"zoom":["If I just stay still, they won’t know I’m in pajama pants.","Career sabotage, sponsored by chaos.","Wrong meeting, but I respect the hustle."],
+"midnight":["Midnight hunger is a lifestyle.","You can’t have it, it’s garlic chicken!","I leave you alone for five minutes…"],
+"nap":["Just a five-minute recharge…","Temporal distortion achieved.","Power nap became a full-season arc."],
+"snooze":["Five more minutes can’t hurt.","Congratulations, we time-traveled to noon.","The alarm and the cat conspired."],
+"plant":["Responsibility level: unlocked.","Photosynthesis won’t save you now.","At least these ones survive affection."],
+"lost":["I swear I just had my wallet.","So you’re the black hole of the house.","We’re calling it modern archaeology."],
+"chat":["Finally organizing everyone’s schedules like a pro.","Oh no. Oh no no no.","Digital sabotage strikes again."],
+"sunday":["It’s Sunday. I’m resting my ambitions.","Domestic chaos: the soundtrack of peace.","Rest achieved. Progress denied."]
+};
+
+const BEATS=["intro","complication","punchline"];
+
+function pickSet(){
+  if(urlSet && ASSETS[urlSet]) return SETS.find(s=>s.id===urlSet);
+  return choice(SETS);
+}
+
+function buildStrip(){
+  const set = pickSet();
+  const imgs = ASSETS[set.id];
+  const lines = DIALOGUE[set.id];
+
+  document.getElementById('seedOut').textContent = seed;
+  document.getElementById('titleOut').textContent = set.title;
+
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+
+  for(let i=0;i<3;i++){
+    const cell = document.createElement('div');
+    cell.className = 'panel';
+
+    const img = document.createElement('img');
+    img.src = imgs[i];
+    img.alt = set.title+' panel '+(i+1);
+    img.onerror=()=>{cell.style.background='#300';cell.textContent='missing '+imgs[i];};
+    cell.appendChild(img);
+
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble speak '+(i===1?'bottom':'top');
+    bubble.textContent = lines[i];
+    // default positions (can tweak per set if you want):
+    bubble.style.left = i===1 ? '12%' : '10%';
+    bubble.style.top  = i===1 ? '70%' : '12%';
+
+    cell.appendChild(bubble);
+    grid.appendChild(cell);
+  }
+
+  // Share links for the current seed+set
+  const base = location.origin + location.pathname + '?seed=' + seed + '&set=' + set.id;
+  document.getElementById('shareX2').href  = 'https://twitter.com/intent/tweet?text=Check+out+this+Panels+strip!&url=' + encodeURIComponent(base);
+  document.getElementById('shareFB2').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(base);
+  document.getElementById('shareIG2').href = 'https://www.instagram.com/?url=' + encodeURIComponent(base);
+}
+
+document.getElementById('reroll').onclick = ()=> location.href = location.pathname;
+
+document.getElementById('copyLink').onclick = async ()=>{
+  const set = pickSet();
+  const u = new URL(location.href);
+  u.searchParams.set('seed', String(seed));
+  u.searchParams.set('set', set.id);
+  await navigator.clipboard.writeText(u.toString());
+  const btn = document.getElementById('copyLink');
+  const old = btn.textContent; btn.textContent='✅ Copied!';
+  setTimeout(()=>btn.textContent=old, 1200);
+};
+
+buildStrip();
+</script>
+</body>
+</html>
